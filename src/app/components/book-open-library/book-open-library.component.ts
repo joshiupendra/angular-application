@@ -13,7 +13,7 @@ export class BookOpenLibraryComponent implements OnInit {
   // bookAPIForm!: FormGroup;
   isbn: string = ""; 
   validIsbn: boolean = true; 
-
+  book: Book = {};
 
   constructor(
     private openLibraryService: OpenLibraryService,
@@ -29,6 +29,8 @@ export class BookOpenLibraryComponent implements OnInit {
   getBookByIsbn(isbn: string) {
     this.openLibraryService.getBookDataFromIsbn(isbn).pipe().subscribe((book) => {
       console.log(book);
+      this.book = book;
+      console.log(this.book);
     });
   }
 
