@@ -1,13 +1,12 @@
-<p>book-open-library works!</p>
 <div class="container p-4">
   <h2 class="text-2xl font-bold mb-4">Open Library API</h2>
-  <form (ngSubmit)="onSubmit()">
+  <form [formGroup]="isbnForm" (ngSubmit)="onSubmit()">
     <div class="row">
       <div class="col-6">
         <div class="form-group col-6 mb-4">
           <label for="isbn">ISBN</label>
-          <input [(ngModel)]="isbn" type="text" class="form-control" id="isbn" name="isbn" required />
-          <div class="alert alert-danger" [hidden]="validIsbn">ISBN should be 10 or 13 digits</div>
+          <input type="text" class="form-control" id="isbn" name="isbn" formControlName="isbn" />
+          <div *ngIf="isbn?.invalid && (isbn?.dirty || isbn?.touched)" class="alert alert-danger">ISBN should be 10 or 13 digits</div>
         </div>
         <button type="submit" class="btn btn-success">Submit</button>
       </div>

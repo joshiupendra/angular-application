@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OpenLibraryService } from '../../services/open-library/open-library.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Book } from '../../model/book';
 
 @Component({
@@ -11,19 +11,24 @@ import { Book } from '../../model/book';
 export class BookOpenLibraryComponent implements OnInit {
 
   // bookAPIForm!: FormGroup;
-  isbn: string = ""; 
+  // isbn: string = ""; 
   validIsbn: boolean = true; 
   book: Book = {};
+  isbnForm: FormGroup;
 
   constructor(
     private openLibraryService: OpenLibraryService,
     private formBuilder: FormBuilder
-  ) {}
+  ) {
+    this.isbnForm = this.formBuilder.group({
+      isbn: ["", [Validators.required, Validators.maxLength(13), Validators.minLength(10)]]
+    });
+  }
 
   ngOnInit(): void {
     // 9781847941497 - Never Split the Difference
     // 9780140328721 - "Fantastic Mr. Fox"
-      this.getBookByIsbn("9781847941497");
+    //  this.getBookByIsbn("9781847941497");
   }
 
   getBookByIsbn(isbn: string) {
@@ -34,7 +39,22 @@ export class BookOpenLibraryComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  onSubmit(): void {
+    if (this.isFormValid()) {
+      const isbn = this.isbnForm.get("isbn")?.value;
+      this.getBookByIsbn(isbn);
+    } else {
+      this.isbnForm.controls["isbn"].setErrors({ "incorrect": true });
+      console.log(" ISBN Form is not valid.");
+    }
+  }
 
+  isFormValid(): boolean {
+    const isbn = this.isbnForm.get("isbn")?.value;
+    return isbn && (isbn.length === 10 || isbn.length === 13); 
+  }
+
+  get isbn() {
+    return this.isbnForm.get("isbn");
   }
 }
